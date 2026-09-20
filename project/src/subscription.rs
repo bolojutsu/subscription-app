@@ -1,10 +1,20 @@
+use serde::{Deserialize,Serialize};
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Subscription{
     pub subscription_id: String,
     pub user_id: String,
     pub plan_name: String,
     pub price_in_cents: u32,
     pub is_active: bool,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CreateSubscriptionPayload {
+    pub subscription_id: String,
+    pub user_id: String,
+    pub plan_name: String,
+    pub price_in_cents: u32,
 }
 
 impl Subscription {

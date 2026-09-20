@@ -1,4 +1,13 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct User {
+    pub user_id: String,
+    pub name: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct CreateUserPayload {
     pub user_id: String,
     pub name: String,
 }
