@@ -1,11 +1,8 @@
 use std::io::{self, Write};
 use crate::subscription::Subscription;
 use crate::user::User;
-
 mod subscription;
 mod user;
-
-
 
 fn prompt_input(prompt: &str) -> String {
     print!("{}", prompt);
