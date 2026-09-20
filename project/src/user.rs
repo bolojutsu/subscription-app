@@ -8,7 +8,6 @@ pub struct User {
 
 #[derive(Debug, Deserialize)]
 pub struct CreateUserPayload {
-    pub user_id: String,
     pub name: String,
 }
 
