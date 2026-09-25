@@ -1,0 +1,33 @@
+/* ---------------------------------------------------------
+   Shared design tokens — import this once (e.g. in main.tsx
+   or index.css) before the component stylesheets.
+   --------------------------------------------------------- */
+
+   @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600&display=swap");
+
+   :root {
+     /* Color — ledger-book palette: ink green, ticket paper, brass, one rust accent */
+     --color-ink: #1b2b22;
+     --color-ink-deep: #131f19;
+     --color-paper: #f1e9d8;
+     --color-paper-dim: #cfc3a6;
+     --color-brass: #c89b3c;
+     --color-brass-dark: #a97f2c;
+     --color-rust: #a6432d;
+     --color-line: rgba(241, 233, 216, 0.16);
+   
+     /* Type */
+     --font-display: "Fraunces", Georgia, serif;
+     --font-body: "Space Grotesk", "Segoe UI", sans-serif;
+   
+     /* Modular scale, ~1.25 ratio */
+     --step-0: 1rem;
+     --step-1: 1.25rem;
+     --step-2: 1.563rem;
+     --step-3: 1.953rem;
+     --step-4: 2.441rem;
+     --step-5: 3.815rem;
+   
+     --content-width: 72rem;
+     --gutter: clamp(1.25rem, 4vw, 3rem);
+   }

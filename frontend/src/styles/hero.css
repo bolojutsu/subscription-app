@@ -1,0 +1,191 @@
+.hero {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  
+  .hero__inner {
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding: clamp(3rem, 8vw, 6rem) var(--gutter);
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  
+  .hero__headline {
+    font-family: var(--font-display);
+    font-size: clamp(var(--step-4), 5vw, var(--step-5));
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    max-width: 16ch;
+    margin: 0 0 1.25rem;
+  }
+  
+  .hero__subhead {
+    font-family: var(--font-body);
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--color-paper-dim);
+    max-width: 42ch;
+    margin: 0 0 2rem;
+  }
+  
+  .hero__actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .hero__primary {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--color-ink);
+    background: var(--color-brass);
+    padding: 0.85rem 1.5rem;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  
+  .hero__primary:hover {
+    background: var(--color-brass-dark);
+  }
+  
+  .hero__secondary {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-decoration-color: var(--color-rust);
+    text-underline-offset: 4px;
+  }
+  
+  .hero__primary:focus-visible,
+  .hero__secondary:focus-visible {
+    outline: 2px solid var(--color-brass);
+    outline-offset: 3px;
+  }
+  
+  /* --- Ledger card: a torn ticket-stub visual, built in pure CSS --- */
+  
+  .hero__card {
+    justify-self: end;
+    width: min(100%, 320px);
+    animation: hero-card-in 0.5s ease-out both;
+  }
+  
+  .hero__card-inner {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border-radius: 6px;
+    padding: 1.75rem 1.5rem 1.5rem;
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .hero__card-business {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--color-ink);
+    opacity: 0.6;
+    margin: 0 0 0.75rem;
+  }
+  
+  .hero__card-price {
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    font-weight: 600;
+    margin: 0;
+    line-height: 1;
+  }
+  
+  .hero__card-price span {
+    font-size: var(--step-0);
+    font-weight: 400;
+    opacity: 0.6;
+  }
+  
+  .hero__card-cadence {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    opacity: 0.65;
+    margin: 0.35rem 0 1.25rem;
+  }
+  
+  .hero__card-divider {
+    position: relative;
+    height: 1px;
+    margin: 0 -1.5rem 1.1rem;
+    border-top: 1px dashed rgba(27, 43, 34, 0.3);
+  }
+  
+  .hero__card-divider::before,
+  .hero__card-divider::after {
+    content: "";
+    position: absolute;
+    top: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-ink);
+  }
+  
+  .hero__card-divider::before {
+    left: -7px;
+  }
+  
+  .hero__card-divider::after {
+    right: -7px;
+  }
+  
+  .hero__card-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero__card-row--muted {
+    opacity: 0.6;
+    font-size: 0.85rem;
+  }
+  
+  .hero__card-status {
+    color: var(--color-rust);
+    font-weight: 500;
+  }
+  
+  @keyframes hero-card-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .hero__card {
+      animation: none;
+    }
+  }
+  
+  @media (max-width: 780px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+    }
+  
+    .hero__card {
+      justify-self: start;
+    }
+  
+    .hero__headline {
+      max-width: none;
+    }
+  }

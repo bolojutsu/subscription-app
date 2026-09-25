@@ -1,0 +1,95 @@
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--color-ink);
+    border-bottom: 1px solid var(--color-line);
+  }
+  
+  .site-header__inner {
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding: 1.1rem var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .site-header__mark {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    color: var(--color-paper);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    margin-right: auto;
+  }
+  
+  .site-header__nav {
+    display: flex;
+    gap: 1.75rem;
+  }
+  
+  .site-header__nav a {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-paper-dim);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  
+  .site-header__nav a:hover {
+    color: var(--color-paper);
+  }
+  
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  
+  .site-header__login {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-paper-dim);
+    text-decoration: none;
+  }
+  
+  .site-header__login:hover {
+    color: var(--color-paper);
+  }
+  
+  .site-header__cta {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: var(--color-brass);
+    padding: 0.55rem 1.1rem;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  
+  .site-header__cta:hover {
+    background: var(--color-brass-dark);
+  }
+  
+  .site-header__nav a:focus-visible,
+  .site-header__login:focus-visible,
+  .site-header__cta:focus-visible,
+  .site-header__mark:focus-visible {
+    outline: 2px solid var(--color-brass);
+    outline-offset: 3px;
+  }
+  
+  /* Mobile: collapse the middle nav, keep mark + primary action */
+  @media (max-width: 640px) {
+    .site-header__nav {
+      display: none;
+    }
+  
+    .site-header__login {
+      display: none;
+    }
+  }

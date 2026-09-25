@@ -14,7 +14,10 @@ mod state;
 mod subscription;
 mod user;
 
-use handlers::{create_subscription, create_user, health_check};
+use handlers::{
+    cancel_subscription, create_subscription, create_user, get_user,
+    get_user_subscription, health_check,
+};
 use state::{AppState, SharedState};
 
 #[tokio::main]
@@ -33,6 +36,9 @@ async fn main() {
         .route("/api/health", get(health_check))
         .route("/api/users", post(create_user))
         .route("/api/subscriptions", post(create_subscription))
+        .route("/api/users/{id}", get(get_user))
+        .route("/api/users/{id}/subscriptions", get(get_user_subscription))
+        .route("/api/subscriptions/{id}/cancel", post(cancel_subscription))
         .layer(cors)
         .with_state(state);
 

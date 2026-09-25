@@ -1,7 +1,7 @@
-use axum::{extract::State, http::StatusCode, Json};
+use axum::{extract::State, http::StatusCode, Json, extract::{Path}};
 use uuid::Uuid;
 
-use crate::state::SharedState;
+use crate::state::{SharedState};
 use crate::subscription::{CreateSubscriptionPayload, Subscription};
 use crate::user::{CreateUserPayload, User};
 
@@ -24,6 +24,21 @@ pub async fn create_user(
         .insert(user.user_id.clone(), user.clone());
 
     (StatusCode::CREATED, Json(user))
+}
+
+// GET /api/users/:id
+pub async fn get_user(
+    State(state): State<SharedState>,
+    Path(id): Path<String>,
+) -> Result<Json<User>, StatusCode> {
+
+    let database = state.lock().unwrap();
+    database
+        .users
+        .get(&id)
+        .cloned()
+        .map(Json)
+        .ok_or(StatusCode::NOT_FOUND)
 }
 
 // POST /api/subscriptions
@@ -49,4 +64,40 @@ pub async fn create_subscription(
         .insert(subscription.subscription_id.clone(), subscription.clone());
 
     Ok((StatusCode::CREATED, Json(subscription)))
+}
+
+// GET /api/users/:id/subscriptions
+pub async fn get_user_subscription(
+    State(state): State<SharedState>,
+    Path(id): Path<String>,
+) -> Result<Json<Vec<Subscription>>, StatusCode> {
+    let database = state.lock().unwrap();
+    
+    if !database.users.contains_key(&id) {
+        return Err(StatusCode::NOT_FOUND)
+    }
+
+    let subs:Vec<Subscription> = database
+        .subscriptions
+        .values()
+        .filter(|s| s.user_id == id)
+        .cloned()
+        .collect();
+
+    Ok(Json(subs))
+}
+
+pub async fn cancel_subscription(
+    State(state): State<SharedState>,
+    Path(id): Path<String>,
+) -> Result<Json<Subscription>, StatusCode> {
+
+    let mut database = state.lock().unwrap();
+    let sub = database
+        .subscriptions
+        .get_mut(&id)
+        .ok_or(StatusCode::NOT_FOUND)?;
+
+    sub.is_active = false;
+    Ok(Json(sub.clone()))
 }
