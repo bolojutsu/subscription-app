@@ -13,10 +13,12 @@ mod handlers;
 mod state;
 mod subscription;
 mod user;
+mod vendor;
 
 use handlers::{
-    cancel_subscription, create_subscription, create_user, get_user,
-    get_user_subscription, health_check,
+    cancel_subscription, create_subscription, create_user, create_vendor,
+    get_user, get_user_subscriptions, get_vendor, get_vendor_subscriptions,
+    health_check,
 };
 use state::{AppState, SharedState};
 
@@ -34,10 +36,16 @@ async fn main() {
     // Build API routes
     let app = Router::new()
         .route("/api/health", get(health_check))
+        // Users (people subscribing to a service)
         .route("/api/users", post(create_user))
-        .route("/api/subscriptions", post(create_subscription))
         .route("/api/users/{id}", get(get_user))
-        .route("/api/users/{id}/subscriptions", get(get_user_subscription))
+        .route("/api/users/{id}/subscriptions", get(get_user_subscriptions))
+        // Vendors (businesses offering a subscription service)
+        .route("/api/vendors", post(create_vendor))
+        .route("/api/vendors/{id}", get(get_vendor))
+        .route("/api/vendors/{id}/subscriptions", get(get_vendor_subscriptions))
+        // Subscriptions (the link between a user and a vendor)
+        .route("/api/subscriptions", post(create_subscription))
         .route("/api/subscriptions/{id}/cancel", post(cancel_subscription))
         .layer(cors)
         .with_state(state);
