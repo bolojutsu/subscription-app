@@ -30,4 +30,13 @@
    
      --content-width: 72rem;
      --gutter: clamp(1.25rem, 4vw, 3rem);
+
+     /* Add this to global.css */
+    html, body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--color-ink);
+        color: var(--color-paper);
+        font-family: var(--font-body);
+      }
    }

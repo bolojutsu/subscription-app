@@ -1,0 +1,117 @@
+/* ---------------------------------------------------------
+   Signup Form Stylesheet — Cohesive Ledger Theme
+   --------------------------------------------------------- */
+
+   .signup-form {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    padding: clamp(3rem, 6vw, 5rem) var(--gutter);
+  }
+  
+  .signup-form__inner {
+    max-width: 48rem;
+    margin-inline: auto;
+    background-color: var(--color-ink-deep);
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    box-shadow: 0 16px 40px rgba(19, 31, 25, 0.4);
+  }
+  
+  .signup-form__heading {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--color-paper);
+    margin-bottom: 2rem;
+    text-wrap: balance;
+  }
+  
+  .signup-form__form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  
+  @media (min-width: 48rem) {
+    .signup-form__form {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .signup-form__group--full {
+      grid-column: span 2;
+    }
+  }
+  
+  .signup-form__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .signup-form__group label {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-paper-dim);
+    letter-spacing: 0.02em;
+  }
+  
+  .signup-form__group input,
+  .signup-form__group textarea {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-paper-dim);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .signup-form__group textarea {
+    resize: vertical;
+    min-height: 7rem;
+  }
+  
+  .signup-form__group input:focus,
+  .signup-form__group textarea:focus {
+    outline: none;
+    border-color: var(--color-brass);
+    box-shadow: 0 0 0 3px rgba(200, 155, 60, 0.2);
+  }
+  
+  .signup-form__actions {
+    grid-column: 1 / -1;
+    margin-top: 0.5rem;
+  }
+  
+  .signup-form__submit {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--color-ink-deep);
+    background-color: var(--color-brass);
+    border: none;
+    border-radius: 4px;
+    padding: 0.875rem 2rem;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+  }
+  
+  .signup-form__submit:hover {
+    background-color: var(--color-brass-dark);
+  }
+  
+  .signup-form__submit:active {
+    transform: translateY(1px);
+  }
+  
+  .signup-form__submit:focus-visible {
+    outline: 2px solid var(--color-brass);
+    outline-offset: 3px;
+  }
