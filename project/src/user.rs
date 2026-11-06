@@ -4,18 +4,25 @@ use serde::{Deserialize, Serialize};
 pub struct User {
     pub user_id: String,
     pub name: String,
+    pub email: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct CreateUserPayload {
     pub name: String,
+    pub email: String,
 }
 
 impl User {
-    pub fn new(user_id: impl Into<String>, name: impl Into<String>) -> Self {
+    pub fn new(
+        user_id: impl Into<String>,
+        name: impl Into<String>,
+        email: impl Into<String>,
+    ) -> Self {
         Self {
             user_id: user_id.into(),
             name: name.into(),
+            email: email.into(),
         }
     }
 }
