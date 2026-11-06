@@ -1,0 +1,177 @@
+.discover {
+    max-width: var(--content-width);
+    margin-inline: auto;
+    /* top padding clears the floating header pill */
+    padding: clamp(6.5rem, 10vw, 8rem) var(--gutter) clamp(3rem, 6vw, 5rem);
+    color: var(--color-ink);
+  }
+  
+  .discover__heading {
+    font-family: var(--font-display);
+    font-size: clamp(var(--step-4), 6vw, var(--step-5));
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin: 0 0 2.5rem;
+    text-wrap: balance;
+  }
+  
+  /* Loading / empty states */
+  .discover__status {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: var(--step-1);
+    font-weight: 600;
+    background: var(--color-paper);
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1.25rem;
+    box-shadow: 4px 4px 0 var(--color-ink);
+    margin: 0;
+  }
+  
+  .discover__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 1.75rem;
+  }
+  
+  .discover__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: var(--color-paper);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hard);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  
+  .discover__card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-hard-lg);
+  }
+  
+  /* Initial-letter badge, color rotates through the palette */
+  .discover__avatar {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: var(--border);
+    border-radius: 50%;
+    background: var(--color-flame);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 800;
+    line-height: 1;
+  }
+  
+  .discover__card:nth-child(4n + 2) .discover__avatar {
+    background: var(--color-sun);
+  }
+  
+  .discover__card:nth-child(4n + 3) .discover__avatar {
+    background: var(--color-pink);
+  }
+  
+  .discover__card:nth-child(4n + 4) .discover__avatar {
+    background: var(--color-tangerine);
+  }
+  
+  .discover__name {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0.25rem 0 0;
+  }
+  
+  .discover__description {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .discover__website {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-flame);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    width: fit-content;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .discover__plan {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.7;
+    margin: auto 0 0;
+    padding-top: 0.5rem;
+    border-top: 2px dashed var(--color-ink);
+  }
+  
+  .discover__subscribe {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    font-weight: 700;
+    color: var(--color-ink);
+    background: var(--color-flame);
+    border: var(--border);
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--color-ink);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+  }
+  
+  .discover__subscribe:hover:not(:disabled) {
+    background: var(--color-tangerine);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--color-ink);
+  }
+  
+  .discover__subscribe:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 var(--color-ink);
+  }
+  
+  /* Subscribed state */
+  .discover__subscribe:disabled {
+    background: var(--color-ink);
+    color: var(--color-sun);
+    box-shadow: none;
+    cursor: default;
+  }
+  
+  .discover__subscribe:focus-visible,
+  .discover__website:focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .discover__card,
+    .discover__subscribe {
+      transition: none;
+    }
+  }

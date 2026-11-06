@@ -1,0 +1,132 @@
+/* ---------------------------------------------------------
+   Signup form (user) — warm sticker-card style
+   --------------------------------------------------------- */
+
+   .signup-form {
+    background-color: var(--color-sun);
+    color: var(--color-ink);
+    /* top padding clears the floating header pill */
+    padding: clamp(6.5rem, 10vw, 8rem) var(--gutter) clamp(3rem, 6vw, 5rem);
+  }
+  
+  .signup-form__inner {
+    max-width: 48rem;
+    margin-inline: auto;
+    background-color: var(--color-paper);
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    padding: clamp(2rem, 4vw, 3.5rem);
+    box-shadow: var(--shadow-hard);
+  }
+  
+  .signup-form__heading {
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--color-ink);
+    margin: 0 0 2rem;
+    text-wrap: balance;
+  }
+  
+  .signup-form__form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  
+  @media (min-width: 48rem) {
+    .signup-form__form {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .signup-form__group--full {
+      grid-column: span 2;
+    }
+  }
+  
+  .signup-form__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  
+  .signup-form__group label {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  
+  .signup-form__group input,
+  .signup-form__group textarea {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    color: var(--color-ink);
+    background-color: #fff;
+    border: var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    transition: box-shadow 0.15s ease, background-color 0.15s ease;
+    width: 100%;
+  }
+  
+  .signup-form__group input::placeholder,
+  .signup-form__group textarea::placeholder {
+    color: rgba(43, 18, 8, 0.5);
+  }
+  
+  .signup-form__group textarea {
+    resize: vertical;
+    min-height: 7rem;
+  }
+  
+  .signup-form__group input:focus,
+  .signup-form__group textarea:focus {
+    outline: none;
+    background-color: #fffdf6;
+    box-shadow: 4px 4px 0 var(--color-flame);
+  }
+  
+  .signup-form__actions {
+    grid-column: 1 / -1;
+    margin-top: 0.5rem;
+  }
+  
+  .signup-form__submit {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    font-weight: 700;
+    color: var(--color-ink);
+    background-color: var(--color-flame);
+    border: var(--border);
+    border-radius: 999px;
+    padding: 0.9rem 2rem;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 4px 4px 0 var(--color-ink);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s ease;
+  }
+  
+  .signup-form__submit:hover {
+    background-color: var(--color-tangerine);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--color-ink);
+  }
+  
+  .signup-form__submit:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--color-ink);
+  }
+  
+  .signup-form__submit:focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .signup-form__submit {
+      transition: none;
+    }
+  }

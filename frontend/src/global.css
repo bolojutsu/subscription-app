@@ -1,24 +1,34 @@
 /* ---------------------------------------------------------
    Shared design tokens — import this once (e.g. in main.tsx
    or index.css) before the component stylesheets.
+   Palette: marigold, flame, tangerine, bubblegum coral on
+   warm paper, with espresso ink for text and borders.
    --------------------------------------------------------- */
 
-   @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600&display=swap");
+   @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600;700&display=swap");
 
    :root {
-     /* Color — ledger-book palette: ink green, ticket paper, brass, one rust accent */
-     --color-ink: #1b2b22;
-     --color-ink-deep: #131f19;
-     --color-paper: #f1e9d8;
-     --color-paper-dim: #cfc3a6;
-     --color-brass: #c89b3c;
-     --color-brass-dark: #a97f2c;
-     --color-rust: #a6432d;
-     --color-line: rgba(241, 233, 216, 0.16);
+     /* Color */
+     --color-sun: #ffc233;
+     --color-flame: #ff5a2c;
+     --color-flame-dark: #e8411a;
+     --color-flame-text: #c2310a; /* flame, darkened enough for text on paper */
+     --color-tangerine: #ff8f1f;
+     --color-pink: #ff8fa3;
+     --color-ink: #2b1208;
+     --color-ink-deep: #1a0a04;
+     --color-paper: #fff7e8;
+     --color-paper-dim: #f3dcae;
+     --color-line: rgba(43, 18, 8, 0.16);
+   
+     /* Legacy aliases so any old component CSS keeps working */
+     --color-brass: var(--color-flame);
+     --color-brass-dark: var(--color-flame-dark);
+     --color-rust: var(--color-flame-text);
    
      /* Type */
-     --font-display: "Fraunces", Georgia, serif;
-     --font-body: "Space Grotesk", "Segoe UI", sans-serif;
+     --font-display: "Bricolage Grotesque", "Arial Black", sans-serif;
+     --font-body: "DM Sans", "Segoe UI", sans-serif;
    
      /* Modular scale, ~1.25 ratio */
      --step-0: 1rem;
@@ -27,16 +37,61 @@
      --step-3: 1.953rem;
      --step-4: 2.441rem;
      --step-5: 3.815rem;
+     --step-6: 5.5rem;
+   
+     /* Shape */
+     --border: 2px solid var(--color-ink);
+     --radius-sm: 10px;
+     --radius-lg: 24px;
+     --shadow-hard: 6px 6px 0 var(--color-ink);
+     --shadow-hard-lg: 9px 9px 0 var(--color-ink);
    
      --content-width: 72rem;
      --gutter: clamp(1.25rem, 4vw, 3rem);
-
-     /* Add this to global.css */
-    html, body {
-        margin: 0;
-        padding: 0;
-        background-color: var(--color-ink);
-        color: var(--color-paper);
-        font-family: var(--font-body);
-      }
+   }
+   
+   *,
+   *::before,
+   *::after {
+     box-sizing: border-box;
+   }
+   
+   html {
+     min-height: 100%;
+   }
+   
+   body {
+     min-height: 100vh;
+   }
+   
+   /* Sticky-footer layout: the app root and whichever wrapper holds the
+      footer become full-height flex columns, so the footer sits at the bottom */
+   #root,
+   #__next,
+   #root > :has(.site-footer),
+   #__next > :has(.site-footer) {
+     min-height: 100vh;
+     display: flex;
+     flex-direction: column;
+   }
+   
+   #root > :has(.site-footer),
+   #__next > :has(.site-footer) {
+     flex: 1 0 auto;
+     min-height: 0;
+   }
+   
+   .site-footer {
+     margin-top: auto;
+   }
+   
+   html,
+   body {
+     margin: 0;
+     padding: 0;
+     background-color: var(--color-sun); /* every page is marigold-based, so any leftover space blends in */
+     color: var(--color-ink);
+     font-family: var(--font-body);
+     line-height: 1.5;
+     -webkit-font-smoothing: antialiased;
    }

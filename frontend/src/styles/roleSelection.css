@@ -4,88 +4,114 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: var(--gutter);
-    background-color: var(--color-ink);
-    color: var(--color-paper);
+    /* top padding clears the floating header pill */
+    padding: 7rem var(--gutter) 4rem;
+    background-color: var(--color-sun);
+    color: var(--color-ink);
     text-align: center;
-}
-
-.background h1 {
+  }
+  
+  .background h1 {
     font-family: var(--font-display);
-    font-size: var(--step-4);
-    font-weight: 600;
-    margin-bottom: 3rem;
-    color: var(--color-paper);
-    letter-spacing: -0.02em;
-}
-
-.choice {
+    font-size: clamp(var(--step-3), 6vw, var(--step-5));
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    margin: 0 0 3rem;
+    text-wrap: balance;
+    color: var(--color-ink);
+  }
+  
+  .choice {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 2rem;
+    align-items: stretch;
+    gap: 0;
     width: 100%;
-    max-width: 50rem;
+    max-width: 56rem;
     justify-content: center;
-}
-
-/* Transform the links into styled ledger-style cards */
-.choice a {
+  }
+  
+  /* Two big, different-colored tiles */
+  .choice a {
     flex: 1;
-    padding: 2.5rem 2rem;
-    background-color: var(--color-ink-deep);
-    border: 1px solid var(--color-line);
-    border-radius: 4px;
-    color: var(--color-paper);
-    font-family: var(--font-body);
-    font-size: var(--step-1);
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Subtle brass top border accent for interaction */
-.choice a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: transparent;
-    transition: background-color 0.3s ease;
-}
-
-.choice a:hover {
-    border-color: var(--color-brass);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-}
-
-.choice a:hover::before {
-    background-color: var(--color-brass);
-}
-
-/* Styling for the "Or" separator */
-.choice p {
+    min-height: 16rem;
+    padding: 2rem;
+    display: flex;
+    align-items: flex-end;
+    text-align: left;
     font-family: var(--font-display);
-    font-style: italic;
-    color: var(--color-paper-dim);
+    font-size: var(--step-3);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-decoration: none;
+    border: var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-hard);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  
+  .choice a:first-of-type {
+    background-color: var(--color-flame);
+  }
+  
+  .choice a:last-of-type {
+    background-color: var(--color-pink);
+  }
+  
+  .choice a:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-hard-lg);
+  }
+  
+  .choice a:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--color-ink);
+  }
+  
+  .choice a:focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 4px;
+  }
+  
+  /* "Or" sits as a badge between the tiles */
+  .choice p {
+    position: relative;
+    z-index: 2;
+    flex: none;
+    align-self: center;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 -1.75rem;
+    border-radius: 50%;
+    background: var(--color-ink);
+    color: var(--color-sun);
+    font-family: var(--font-display);
     font-size: var(--step-0);
-    margin: 0;
-}
-
-/* Responsive layout for smaller screens */
-@media (max-width: 768px) {
+    font-weight: 800;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .choice a {
+      transition: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
     .choice {
-        flex-direction: column;
-        gap: 1.5rem;
+      flex-direction: column;
     }
-    
-    .background h1 {
-        font-size: var(--step-3);
+  
+    .choice a {
+      min-height: 10rem;
+      width: 100%;
     }
-}
+  
+    .choice p {
+      margin: -1.75rem 0;
+    }
+  }

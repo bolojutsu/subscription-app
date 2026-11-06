@@ -1,95 +1,98 @@
-.site-header {
+/* Zero-height sticky wrapper: the pill floats over whatever
+   is behind it (hero, form page) instead of reserving a bar. */
+   .site-header {
     position: sticky;
     top: 0;
     z-index: 40;
-    background: var(--color-ink);
-    border-bottom: 1px solid var(--color-line);
+    height: 0;
+    padding: 0 var(--gutter);
+    display: flow-root; /* stops the pill's top margin collapsing out and exposing a strip above the hero */
   }
   
   .site-header__inner {
     max-width: var(--content-width);
-    margin-inline: auto;
-    padding: 1.1rem var(--gutter);
+    margin: 0.75rem auto 0;
+    padding: 0.55rem 0.55rem 0.55rem 1.5rem;
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.25rem;
+    background: var(--color-paper);
+    border: var(--border);
+    border-radius: 999px;
+    box-shadow: 4px 4px 0 var(--color-ink);
   }
   
   .site-header__mark {
     font-family: var(--font-display);
     font-size: var(--step-2);
-    font-weight: 600;
-    color: var(--color-paper);
+    font-weight: 800;
+    color: var(--color-ink);
     text-decoration: none;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.03em;
     margin-right: auto;
   }
   
   .site-header__nav {
     display: flex;
-    gap: 1.75rem;
+    gap: 0.25rem;
   }
   
-  .site-header__nav a {
+  .site-header__nav a,
+  .site-header__login {
     font-family: var(--font-body);
     font-size: 0.95rem;
-    color: var(--color-paper-dim);
+    font-weight: 500;
+    color: var(--color-ink);
     text-decoration: none;
-    transition: color 0.15s ease;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    transition: background-color 0.15s ease;
   }
   
-  .site-header__nav a:hover {
-    color: var(--color-paper);
+  .site-header__nav a:hover,
+  .site-header__login:hover {
+    background: var(--color-sun);
   }
   
   .site-header__actions {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-  }
-  
-  .site-header__login {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    color: var(--color-paper-dim);
-    text-decoration: none;
-  }
-  
-  .site-header__login:hover {
-    color: var(--color-paper);
+    gap: 0.25rem;
   }
   
   .site-header__cta {
     font-family: var(--font-body);
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 700;
     color: var(--color-ink);
-    background: var(--color-brass);
-    padding: 0.55rem 1.1rem;
-    border-radius: 3px;
+    background: var(--color-flame);
+    border: var(--border);
+    padding: 0.55rem 1.25rem;
+    border-radius: 999px;
     text-decoration: none;
-    transition: background 0.15s ease;
+    transition: background-color 0.15s ease;
   }
   
   .site-header__cta:hover {
-    background: var(--color-brass-dark);
+    background: var(--color-sun);
   }
   
   .site-header__nav a:focus-visible,
   .site-header__login:focus-visible,
   .site-header__cta:focus-visible,
   .site-header__mark:focus-visible {
-    outline: 2px solid var(--color-brass);
-    outline-offset: 3px;
+    outline: 3px solid var(--color-ink);
+    outline-offset: 2px;
   }
   
   /* Mobile: collapse the middle nav, keep mark + primary action */
   @media (max-width: 640px) {
-    .site-header__nav {
+    .site-header__nav,
+    .site-header__login {
       display: none;
     }
   
-    .site-header__login {
-      display: none;
+    .site-header__inner {
+      padding-left: 1.1rem;
     }
   }
