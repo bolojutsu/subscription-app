@@ -65,6 +65,8 @@ export const api = {
       body: JSON.stringify(payload),
     }),
 
+  listVendors: () => request<Vendor[]>("/api/vendors"),
+
   getVendor: (vendorId: string) => request<Vendor>(`/api/vendors/${vendorId}`),
 
   getVendorSubscriptions: (vendorId: string) =>
