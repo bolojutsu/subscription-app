@@ -1,0 +1,91 @@
+.background {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: var(--gutter);
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+    text-align: center;
+}
+
+.background h1 {
+    font-family: var(--font-display);
+    font-size: var(--step-4);
+    font-weight: 600;
+    margin-bottom: 3rem;
+    color: var(--color-paper);
+    letter-spacing: -0.02em;
+}
+
+.choice {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    max-width: 50rem;
+    justify-content: center;
+}
+
+/* Transform the links into styled ledger-style cards */
+.choice a {
+    flex: 1;
+    padding: 2.5rem 2rem;
+    background-color: var(--color-ink-deep);
+    border: 1px solid var(--color-line);
+    border-radius: 4px;
+    color: var(--color-paper);
+    font-family: var(--font-body);
+    font-size: var(--step-1);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle brass top border accent for interaction */
+.choice a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.choice a:hover {
+    border-color: var(--color-brass);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.choice a:hover::before {
+    background-color: var(--color-brass);
+}
+
+/* Styling for the "Or" separator */
+.choice p {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-paper-dim);
+    font-size: var(--step-0);
+    margin: 0;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+    .choice {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .background h1 {
+        font-size: var(--step-3);
+    }
+}

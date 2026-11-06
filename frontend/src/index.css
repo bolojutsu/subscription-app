@@ -3,4 +3,5 @@
 @import "./styles/hero.css";
 @import "./styles/signupForms/signupFormClient.css";
 @import "./styles/signupForms/signupFormUser.css";
+@import "./styles/roleSelection.css";
 @import "./styles/footer.css"; 
