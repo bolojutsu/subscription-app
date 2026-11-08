@@ -43,6 +43,12 @@ function App() {
                 } else {
                     return <RoleSelection />;
                 }
+            case '/plans':
+                return <Plans/>
+            case '/pricing':
+                return <Pricing/>
+            case '/docs':
+                return <Docs/>
             default:
                 return <h1>404</h1>;
         }

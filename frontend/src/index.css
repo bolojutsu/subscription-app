@@ -5,4 +5,7 @@
 @import "./styles/signupForms/signupFormUser.css";
 @import "./styles/roleSelection.css";
 @import "./styles/discover.css";
+@import "./styles/navbar/docs.css";
+@import "./styles/navbar/plans.css";
+@import "./styles/navbar/pricing.css";
 @import "./styles/footer.css"; 

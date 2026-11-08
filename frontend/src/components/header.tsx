@@ -11,9 +11,9 @@ const Header = () => {
         </a>
  
         <nav className="site-header__nav" aria-label="Main">
-          <a href="#plans">Plans</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#docs">Docs</a>
+          <a href="/plans">Plans</a>
+          <a href="/pricing">Pricing</a>
+          <a href="/docs">Docs</a>
         </nav>
  
         <div className="site-header__actions">
