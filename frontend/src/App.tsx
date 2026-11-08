@@ -1,4 +1,7 @@
 import Header from './components/header';
+import Plans from './components/navbar/plans';
+import Docs from './components/navbar/docs';
+import Pricing from './components/navbar/pricing';
 import Footer from './components/footer';
 import Hero from './components/hero';
 import RoleSelection from './components/roleSelection';
