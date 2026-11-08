@@ -17,7 +17,6 @@ function App() {
             case '/':
                 return (
                     <>
-                        <Header />
                         <Hero />
                         <Footer />
                     </>
@@ -30,19 +29,29 @@ function App() {
                 return <SignupFormCustomer />;
             case '/discover':
                 // only signed-up customers get in, everyone else goes back to role select
-                return session?.role === 'customer'
-                    ? <Discover customerId={session.id} />
-                    : <RoleSelection />;
+                if (session?.role === 'customer') {
+                    return <Discover customerId={session.id} />;
+                } else {
+                    return <RoleSelection />;
+                }
             case '/vendor-dashboard':
-                return session?.role === 'vendor'
-                    ? <h1>Welcome, {session.name}</h1> // placeholder
-                    : <RoleSelection />;
+                if (session?.role === 'vendor') {
+                    return <h1>Welcome, {session.name}</h1>; // placeholder
+                } else {
+                    return <RoleSelection />;
+                }
             default:
                 return <h1>404</h1>;
         }
     }
 
-    return <main>{renderContent()}</main>;
+    // If it's not a 404 page, render the Header at the top globally
+    return (
+        <main>
+            {path !== '*' && path !== '404' && <Header />} 
+            {renderContent()}
+        </main>
+    );
 }
 
 export default App;
