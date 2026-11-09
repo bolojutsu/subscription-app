@@ -10,6 +10,8 @@ import RoleSelection from './components/roleSelection';
 import SignupFormVendor from './components/signupForms/signupFormVendor';
 import SignupFormCustomer from './components/signupForms/signupFormCustomer';
 import Discover from './components/discover';
+import LoginFormVendor from './components/loginForms/loginFormVendor';
+import LoginFormCustomer from './components/loginForms/loginFormCustomer';
 import { getSession } from './configs/session';
 import './index.css';
 
@@ -26,37 +28,61 @@ function App() {
                         <Footer />
                     </>
                 );
+
+            /* --- Auth Selection & Signup Routes --- */
             case '/signup-form':
+                if (session?.role === 'customer') return <CustomerDash />;
+                if (session?.role === 'vendor') return <VendorDash />;
                 return <RoleSelection />;
+
             case '/vendor':
+                if (session?.role === 'vendor') return <VendorDash />;
                 return <SignupFormVendor />;
+
             case '/customer':
+                if (session?.role === 'customer') return <CustomerDash />;
                 return <SignupFormCustomer />;
+
+            /* --- Login Routes --- */
+            case '/login':
+            case '/login-customer':
+                if (session?.role === 'customer') return <CustomerDash />;
+                if (session?.role === 'vendor') return <VendorDash />;
+                return <LoginFormCustomer />;
+
+            case '/login-vendor':
+                if (session?.role === 'customer') return <CustomerDash />;
+                if (session?.role === 'vendor') return <VendorDash />;
+                return <LoginFormVendor />;
+
+            /* --- Protected Customer Routes --- */
             case '/discover':
-                // only signed-up customers get in, everyone else goes back to role select
                 if (session?.role === 'customer') {
                     return <Discover customerId={session.id} />;
-                } else {
-                    return <RoleSelection />;
                 }
+                return <LoginFormCustomer />;
+
             case '/customer-dashboard':
                 if (session?.role === 'customer') {
                     return <CustomerDash />;
-                } else {
-                    return <RoleSelection />;
                 }
+                return <LoginFormCustomer />;
+
+            /* --- Protected Vendor Routes --- */
             case '/vendor-dashboard':
                 if (session?.role === 'vendor') {
                     return <VendorDash />;
-                } else {
-                    return <RoleSelection />;
                 }
+                return <LoginFormVendor />;
+
+            /* --- Public Navigation Pages --- */
             case '/plans':
                 return <Plans />;
             case '/pricing':
                 return <Pricing />;
             case '/docs':
                 return <Docs />;
+
             default:
                 return (
                     <div style={{ textAlign: 'center', padding: '8rem 2rem' }}>

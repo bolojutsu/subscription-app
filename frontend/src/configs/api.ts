@@ -83,4 +83,18 @@ export const api = {
     request<Subscription>(`/api/subscriptions/${subscriptionId}/cancel`, {
       method: "POST",
     }),
+  
+  loginCustomer: (email: string) =>
+    request<User>("/api/login/customer", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+    }),
+
+  loginVendor: (email: string) =>
+    request<Vendor>("/api/login/vendor", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+    }),
+
+  
 };

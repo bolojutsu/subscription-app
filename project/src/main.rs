@@ -18,7 +18,7 @@ mod vendor;
 use handlers::{
     cancel_subscription, create_subscription, create_user, create_vendor,
     get_user, get_user_subscriptions, get_vendor, get_vendor_subscriptions,
-    health_check, list_vendors,
+    health_check, list_vendors, login_vendor, login_customer,
 };
 use state::{AppState, SharedState};
 
@@ -49,6 +49,8 @@ async fn main() {
         // Subscriptions (the link between a user and a vendor)
         .route("/api/subscriptions", post(create_subscription))
         .route("/api/subscriptions/{id}/cancel", post(cancel_subscription))
+        .route("/api/login/customer", post(login_customer))
+        .route("/api/login/vendor", post(login_vendor))
         .layer(cors)
         .with_state(state);
 

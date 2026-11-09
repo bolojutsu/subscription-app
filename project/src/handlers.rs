@@ -3,6 +3,7 @@ use axum::{
     http::StatusCode,
     Json,
 };
+use serde::Deserialize;
 use uuid::Uuid;
  
 use crate::{state::{SharedState}};
@@ -10,7 +11,10 @@ use crate::subscription::{CreateSubscriptionPayload, Subscription};
 use crate::user::{CreateUserPayload, User};
 use crate::vendor::{CreateVendorPayload, Vendor};
 
-
+#[derive(Debug, Deserialize)]
+pub struct LoginPayload {
+    pub email: String,
+}
 
 pub async fn health_check() -> &'static str {
     "API is running"
@@ -26,6 +30,24 @@ pub async fn create_user(
     let user = User::new(Uuid::new_v4().to_string(), payload.name, payload.email);
     state.lock().unwrap().users.insert(user.user_id.clone(), user.clone());
     (StatusCode::CREATED, Json(user))
+}
+
+// POST /api/login/customer
+pub async fn login_customer(
+    State(state): State<SharedState>,
+    Json(payload): Json<LoginPayload>,
+) -> Result<Json<User>, StatusCode> {
+    let database = state.lock().unwrap();
+    let user = database
+        .users
+        .values()
+        .find(|u| u.email == payload.email)
+        .cloned();
+
+    match user {
+        Some(u) => Ok(Json(u)),
+        None => Err(StatusCode::NOT_FOUND),
+    }
 }
 
 // GET /api/users/:id
@@ -70,6 +92,23 @@ pub async fn create_vendor(
     (StatusCode::CREATED, Json(vendor))
 }
 
+// POST /api/login/vendor
+pub async fn login_vendor(
+    State(state): State<SharedState>,
+    Json(payload): Json<LoginPayload>,
+) -> Result<Json<Vendor>, StatusCode> {
+    let database = state.lock().unwrap();
+    let vendor = database
+        .vendors
+        .values()
+        .find(|v| v.email == payload.email)
+        .cloned();
+
+    match vendor {
+        Some(v) => Ok(Json(v)),
+        None => Err(StatusCode::NOT_FOUND),
+    }
+}
 
 // GET /api/vendor (powers the discovery page)
 pub async fn list_vendors(State(state): State<SharedState>) -> Json<Vec<Vendor>> {
