@@ -39,29 +39,38 @@ function App() {
                 } else {
                     return <RoleSelection />;
                 }
+            case '/customer-dashboard':
+                if (session?.role === 'customer') {
+                    return <CustomerDash />;
+                } else {
+                    return <RoleSelection />;
+                }
             case '/vendor-dashboard':
                 if (session?.role === 'vendor') {
-                    return <h1>Welcome, {session.name}</h1>; // placeholder
+                    return <VendorDash />;
                 } else {
                     return <RoleSelection />;
                 }
             case '/plans':
-                return <Plans/>
+                return <Plans />;
             case '/pricing':
-                return <Pricing/>
+                return <Pricing />;
             case '/docs':
-                return <Docs/>
+                return <Docs />;
             default:
-                return <h1>404</h1>;
+                return (
+                    <div style={{ textAlign: 'center', padding: '8rem 2rem' }}>
+                        <h1>404</h1>
+                        <p>Page not found</p>
+                    </div>
+                );
         }
     }
 
-    // If it's not a 404 page, render the Header at the top globally
     return (
         <main>
-            {/* {path !== '*' && path !== '404' && <Header />}  */}
-            <CustomerDash/>
-            {/* {renderContent()} */}
+            <Header />
+            {renderContent()}
         </main>
     );
 }
