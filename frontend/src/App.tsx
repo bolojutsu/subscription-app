@@ -4,6 +4,8 @@ import Docs from './components/navbar/docs';
 import Pricing from './components/navbar/pricing';
 import Footer from './components/footer';
 import Hero from './components/hero';
+import CustomerDash from './components/dashboards/customerdash';
+import VendorDash from './components/dashboards/vendordash';
 import RoleSelection from './components/roleSelection';
 import SignupFormVendor from './components/signupForms/signupFormVendor';
 import SignupFormCustomer from './components/signupForms/signupFormCustomer';
@@ -57,8 +59,9 @@ function App() {
     // If it's not a 404 page, render the Header at the top globally
     return (
         <main>
-            {path !== '*' && path !== '404' && <Header />} 
-            {renderContent()}
+            {/* {path !== '*' && path !== '404' && <Header />}  */}
+            <CustomerDash/>
+            {/* {renderContent()} */}
         </main>
     );
 }

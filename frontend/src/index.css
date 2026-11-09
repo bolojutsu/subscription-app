@@ -8,4 +8,6 @@
 @import "./styles/navbar/docs.css";
 @import "./styles/navbar/plans.css";
 @import "./styles/navbar/pricing.css";
+@import "./styles/dashboard/customerdash.css";
+@import "./styles/dashboard/vendordash.css";
 @import "./styles/footer.css"; 
