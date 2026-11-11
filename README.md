@@ -7,7 +7,7 @@ generalize to any business that runs on regulars (gyms, studios, etc.).
 ## Stack
 
 - **Backend:** Rust + [axum](https://github.com/tokio-rs/axum), in-memory
-  shared state (no database yet)
+shared state (no database yet)
 - **Frontend:** Vite + React + TypeScript
 
 ## Project structure

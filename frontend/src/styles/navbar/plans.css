@@ -1,0 +1,511 @@
+/* ---------- Tokens ---------- */
+.plans-page {
+    --ink: #0f172a;
+    --ink-strong: #020617;
+    --ink-soft: #1e293b;
+    --ink-muted: #334155;
+    --brand: #fbae17;
+    --amber: #fbbf24;
+    --amber-hover: #fcd34d;
+    --amber-soft: #fde68a;
+    --cream: #fffbeb;
+    --cream-deep: #fef3c7;
+    --white: #ffffff;
+    --shadow-black: #000000;
+  
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+  
+    --shadow-sm: 3px 3px 0 0 var(--shadow-black);
+    --shadow-md: 4px 4px 0 0 var(--shadow-black);
+    --shadow-lg: 6px 6px 0 0 var(--shadow-black);
+    --shadow-xl: 8px 8px 0 0 var(--shadow-black);
+  }
+  
+  /* ---------- Base / scoped reset ---------- */
+  .plans-page,
+  .plans-page *,
+  .plans-page *::before,
+  .plans-page *::after {
+    box-sizing: border-box;
+  }
+  
+  .plans-page :where(h1, h2, h3, p, ul, ol, li) {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .plans-page :where(ul, ol) {
+    list-style: none;
+  }
+  
+  .plans-page button {
+    font: inherit;
+  }
+  
+  .plans-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: var(--brand);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    padding: 3rem 1.25rem; /* extra side room so hard shadows never clip */
+  }
+  
+  .plans-container {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+  
+  /* ---------- Icons ---------- */
+  .icon-sm { width: 1rem; height: 1rem; flex-shrink: 0; }
+  .icon-md { width: 1.5rem; height: 1.5rem; color: var(--ink); }
+  
+  /* ---------- Focus (keyboard) ---------- */
+  .plans-page button:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+  
+  /* On dark surfaces, flip the ring to a light color */
+  .cta-banner button:focus-visible {
+    outline-color: var(--cream);
+  }
+  
+  /* ---------- Hero ---------- */
+  .hero-section {
+    text-align: center;
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(253, 230, 138, 0.6);
+    border: 1px solid var(--ink);
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    color: var(--ink-strong);
+    line-height: 1.1;
+  }
+  
+  .hero-description {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    line-height: 1.625;
+  }
+  
+  /* ---------- Templates header ---------- */
+  .templates-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .templates-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 1rem;
+  }
+  
+  .templates-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+  
+  .templates-subtitle {
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  
+  .btn-custom-plan {
+    align-self: flex-start;
+    background-color: var(--ink);
+    color: var(--white);
+    font-weight: 700;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+  }
+  
+  .btn-custom-plan:hover { background-color: var(--ink-soft); }
+  
+  .btn-custom-plan:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 0 var(--shadow-black);
+  }
+  
+  /* ---------- Grid & cards ---------- */
+  .templates-grid {
+    display: grid;
+    /* 1 col on phones, 2 on tablets, 3 on desktop, no hard breakpoint needed */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 2rem 1.5rem;
+    padding-top: 0.875rem; /* room for the "Most Popular" tag */
+  }
+  
+  .templates-item {
+    display: flex;
+  }
+  
+  .plan-card {
+    position: relative;
+    width: 100%;
+    background-color: var(--cream);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    border: 2px solid var(--ink);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+  }
+  
+  .plan-card:hover { transform: translateY(-4px); }
+  
+  /* Popular: bigger shadow + subtle lift instead of a double border */
+  .plan-card.popular {
+    box-shadow: 10px 10px 0 0 var(--shadow-black);
+    background-color: var(--white);
+  }
+  
+  .popular-tag {
+    position: absolute;
+    top: -0.875rem;
+    right: 1.5rem;
+    background-color: var(--ink);
+    color: var(--cream);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--ink);
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  
+  .icon-box {
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+    border-radius: var(--radius-md);
+    background-color: var(--amber-soft);
+    border: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .category-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--ink-muted); /* darker than before for contrast */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: rgba(253, 230, 138, 0.7);
+    border: 1px solid rgba(30, 41, 59, 0.2);
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-sm);
+    text-align: right;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--ink-strong);
+  }
+  
+  .card-pricing {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  
+  .price-amount {
+    font-size: 1.875rem;
+    font-weight: 900;
+    color: var(--ink-strong);
+  }
+  
+  .price-frequency {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+  
+  .billing-note {
+    margin-top: 0.125rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+  }
+  
+  .card-description {
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  
+  .feature-list {
+    border-top: 1px solid rgba(15, 23, 42, 0.1);
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+  
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  
+  .feature-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--ink-strong);
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+  
+  .btn-blueprint {
+    margin-top: 2rem;
+    width: 100%;
+    background-color: var(--amber);
+    border: 2px solid var(--ink);
+    font-weight: 800;
+    color: var(--ink-strong);
+    padding: 0.75rem 0;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+  }
+  
+  .btn-blueprint:hover { background-color: var(--amber-hover); }
+  
+  .btn-blueprint:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 0 var(--shadow-black);
+  }
+  
+  /* ---------- How it works ---------- */
+  .how-it-works-card {
+    background-color: var(--cream-deep);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-xl);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .section-header-sm { max-width: 36rem; }
+  
+  .section-title {
+    font-size: 1.875rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    color: var(--ink-strong);
+  }
+  
+  .section-subtitle {
+    color: var(--ink-soft);
+    font-weight: 500;
+    margin-top: 0.25rem;
+  }
+  
+  .steps-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .step-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .step-number {
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: rgba(2, 6, 23, 0.2);
+  }
+  
+  .step-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--ink-strong);
+  }
+  
+  .step-description {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+  
+  /* ---------- CTA banner ---------- */
+  .cta-banner {
+    background-color: var(--ink-strong);
+    color: var(--cream);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    border: 2px solid var(--ink);
+    box-shadow: 8px 8px 0 0 rgba(251, 174, 23, 0.4);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .badge-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    color: var(--amber);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .cta-title {
+    font-size: 1.875rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    max-width: 42rem;
+    line-height: 1.15;
+  }
+  
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 24rem;
+  }
+  
+  .btn-primary-launch {
+    background-color: var(--brand);
+    color: var(--ink-strong);
+    font-weight: 900;
+    padding: 0.875rem 2rem;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--amber);
+    box-shadow: 4px 4px 0 0 rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  
+  .btn-primary-launch:hover { background-color: var(--amber-hover); }
+  
+  .btn-secondary-talk {
+    background-color: transparent;
+    color: var(--cream);
+    font-weight: 800;
+    padding: 0.875rem 2rem;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--ink-soft);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  
+  .btn-secondary-talk:hover { background-color: var(--ink); }
+  
+  /* ---------- Responsive ---------- */
+  @media (min-width: 640px) {
+    .cta-actions {
+      flex-direction: row;
+      max-width: none;
+      justify-content: center;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .plans-page { padding: 5rem 1.5rem; }
+  
+    .hero-title { font-size: 3.75rem; }
+    .hero-description { font-size: 1.25rem; }
+  
+    .templates-header {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+  
+    .btn-custom-plan { align-self: auto; }
+  
+    .how-it-works-card { padding: 3rem; }
+    .steps-grid { grid-template-columns: repeat(3, 1fr); }
+  
+    .cta-banner { padding: 3rem; }
+    .cta-title { font-size: 3rem; }
+  }
+  
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .plans-page *,
+    .plans-page *::before,
+    .plans-page *::after {
+      transition: none !important;
+    }
+  
+    .plan-card:hover { transform: none; }
+  }
