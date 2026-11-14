@@ -56,7 +56,7 @@ const VendorDash = () => {
 
   const handleLogout = () => {
     clearSession();
-    window.location.href = "/signup-vendor";
+    window.location.href = "/";
   };
 
   if (!session || session.role !== "vendor") {

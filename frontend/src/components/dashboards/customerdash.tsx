@@ -65,7 +65,7 @@ const CustomerDash = () => {
 
   const handleLogout = () => {
     clearSession();
-    window.location.href = "/signup-customer";
+    window.location.href = "/";
   };
 
   if (!session || session.role !== "customer") {

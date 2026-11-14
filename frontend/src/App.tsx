@@ -20,72 +20,68 @@ function App() {
     const session = getSession();
 
     function renderContent() {
-        switch (path) {
+        switch(path) {
             case '/':
                 return (
                     <>
-                        <Hero />
-                        <Footer />
+                        <Hero/>
+                        <Footer/>
                     </>
                 );
-
-            /* --- Auth Selection & Signup Routes --- */
+            
+            // Auth Selection & sign up routes
             case '/signup-form':
-                if (session?.role === 'customer') return <CustomerDash />;
-                if (session?.role === 'vendor') return <VendorDash />;
-                return <RoleSelection />;
-
+                if (session?.role === 'customer') return <CustomerDash/>;
+                if (session?.role === 'vendor') return <VendorDash/>;
+                return <RoleSelection/>
             case '/vendor':
-                if (session?.role === 'vendor') return <VendorDash />;
-                return <SignupFormVendor />;
-
+                if (session?.role === 'vendor') return <VendorDash/>;
+                return <SignupFormVendor/>;
             case '/customer':
-                if (session?.role === 'customer') return <CustomerDash />;
-                return <SignupFormCustomer />;
-
-            /* --- Login Routes --- */
+                if (session?.role === 'customer') return <CustomerDash/>;
+                return <SignupFormCustomer/>;
+            
+            // Login routes
             case '/login':
+                if (session?.role === 'customer') return <CustomerDash/>;
+                if (session?.role === 'vendor') return <VendorDash/>;
+                return <RoleSelection mode="login"/>;
             case '/login-customer':
-                if (session?.role === 'customer') return <CustomerDash />;
-                if (session?.role === 'vendor') return <VendorDash />;
-                return <LoginFormCustomer />;
-
+                if(session?.role === 'customer') return <CustomerDash/>;
+                return <LoginFormCustomer/>
             case '/login-vendor':
-                if (session?.role === 'customer') return <CustomerDash />;
-                if (session?.role === 'vendor') return <VendorDash />;
-                return <LoginFormVendor />;
-
-            /* --- Protected Customer Routes --- */
+                if(session?.role === 'vendor') return <VendorDash/>;
+                return <LoginFormVendor/>;
+            
+            // Protected Customer Routes
             case '/discover':
-                if (session?.role === 'customer') {
-                    return <Discover customerId={session.id} />;
+                if (session?.role === 'customer'){
+                    return <Discover customerId={session.id} />
                 }
-                return <LoginFormCustomer />;
-
+                return <LoginFormCustomer/>;
             case '/customer-dashboard':
                 if (session?.role === 'customer') {
-                    return <CustomerDash />;
+                    return <CustomerDash/>
                 }
-                return <LoginFormCustomer />;
-
-            /* --- Protected Vendor Routes --- */
+                return <LoginFormCustomer/>;
+            
+            // Protected vendor routes
             case '/vendor-dashboard':
                 if (session?.role === 'vendor') {
-                    return <VendorDash />;
+                    return <VendorDash/>
                 }
-                return <LoginFormVendor />;
-
-            /* --- Public Navigation Pages --- */
+                return <LoginFormVendor/>
+            // Public Navigation pages
             case '/plans':
-                return <Plans />;
+                return <Plans/>;
             case '/pricing':
-                return <Pricing />;
+                return <Pricing/>;
             case '/docs':
-                return <Docs />;
-
+                return <Docs/>;
+            
             default:
                 return (
-                    <div style={{ textAlign: 'center', padding: '8rem 2rem' }}>
+                    <div style={{textAlign: 'center', padding: '8rem 2rem'}}>
                         <h1>404</h1>
                         <p>Page not found</p>
                     </div>
@@ -93,12 +89,13 @@ function App() {
         }
     }
 
-    return (
+    return(
         <main>
-            <Header />
+            <Header/>
             {renderContent()}
         </main>
-    );
+    )
+   
 }
 
 export default App;
