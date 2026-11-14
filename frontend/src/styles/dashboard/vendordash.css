@@ -1,43 +1,4 @@
-.vendor-dash {
-  max-width: var(--content-width);
-  margin-inline: auto;
-  /* Top padding clears the sticky floating header pill */
-  padding: clamp(6.5rem, 10vw, 8rem) var(--gutter) clamp(3rem, 6vw, 5rem);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-}
-
-.vendor-dash__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  border-bottom: 3px solid var(--color-ink);
-  padding-bottom: 2rem;
-  margin-bottom: 2.5rem;
-}
-
-.vendor-dash__header h1 {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-ink);
-  opacity: 0.7;
-  margin: 0 0 0.35rem 0;
-}
-
-.vendor-dash__header h2 {
-  font-family: var(--font-display);
-  font-size: clamp(var(--step-4), 5vw, var(--step-5));
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  color: var(--color-ink);
-  margin: 0;
-  line-height: 1;
-}
+/* Vendor-only styles. Everything shared lives in components/dashboard/dashboard.css */
 
 .vendor-details-card {
   background: var(--color-paper);
@@ -54,7 +15,6 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   margin-top: 0;
-  color: var(--color-ink);
   margin-bottom: 1.25rem;
 }
 
@@ -66,10 +26,12 @@
 
 .vendor-details-grid p {
   margin: 0;
-  color: var(--color-ink);
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 500;
+}
+
+.vendor-details-grid__wide {
+  grid-column: 1 / -1;
 }
 
 .vendor-details-grid a {
@@ -79,15 +41,6 @@
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
   font-weight: 600;
-}
-
-.subscribers-section h3 {
-  font-family: var(--font-display);
-  font-size: var(--step-2);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 1.25rem;
-  color: var(--color-ink);
 }
 
 .subscribers-table-wrapper {
@@ -102,7 +55,6 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-family: var(--font-body);
 }
 
 .subscribers-table th,
@@ -116,7 +68,6 @@
   background-color: var(--color-paper-dim);
   font-family: var(--font-display);
   font-weight: 800;
-  color: var(--color-ink);
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.05em;
@@ -128,247 +79,4 @@
 
 .subscribers-table tbody tr:hover {
   background-color: rgba(255, 194, 51, 0.2);
-}
-
-.empty-state {
-  text-align: center;
-  padding: 3.5rem 2rem;
-  background: var(--color-paper);
-  border: var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-hard);
-  font-family: var(--font-body);
-  font-size: var(--step-1);
-  font-weight: 600;
-  margin: 0;
-}
-
-/* Two-Column Sidebar Layout */
-.dash-layout {
-  display: grid;
-  grid-template-columns: 270px 1fr;
-  gap: 2.5rem;
-  align-items: start;
-}
-
-.dash-sidebar {
-  position: sticky;
-  top: 6.5rem;
-  background: var(--color-paper);
-  border: var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem 1.25rem;
-  box-shadow: var(--shadow-hard);
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
-
-.dash-sidebar__brand {
-  border-bottom: 2px solid var(--color-ink);
-  padding-bottom: 1.25rem;
-}
-
-.dash-sidebar__brand h1,
-.dash-sidebar__brand h2 {
-  font-family: var(--font-display);
-  font-size: var(--step-2);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin: 0 0 0.25rem 0;
-  line-height: 1.1;
-}
-
-.portal-tag {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  opacity: 0.7;
-  margin-bottom: 0.35rem;
-}
-
-.dash-sidebar__nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  text-align: left;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-ink);
-  background: transparent;
-  border: 2px solid transparent;
-  border-radius: var(--radius-sm);
-  padding: 0.7rem 0.9rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.15s ease, transform 0.12s ease;
-}
-
-.sidebar-link:hover {
-  background-color: var(--color-paper-dim, rgba(0, 0, 0, 0.05));
-}
-
-.sidebar-link.is-active {
-  background-color: var(--color-sun);
-  border: var(--border);
-  box-shadow: 3px 3px 0 var(--color-ink);
-}
-
-.dash-sidebar__footer {
-  border-top: 2px solid var(--color-ink);
-  padding-top: 1.25rem;
-}
-
-.btn-full {
-  width: 100%;
-  text-align: center;
-}
-
-/* Section Headers & Panels */
-.section-header {
-  margin-bottom: 2rem;
-}
-
-.section-header h2 {
-  font-family: var(--font-display);
-  font-size: var(--step-3);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  margin: 0 0 0.35rem 0;
-}
-
-.section-header p {
-  margin: 0;
-  opacity: 0.75;
-  font-size: 1rem;
-}
-
-.panel-card {
-  background: var(--color-paper);
-  border: var(--border);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  box-shadow: var(--shadow-hard);
-}
-
-.card-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
-}
-
-.card-header-row h3 {
-  margin: 0;
-}
-
-.btn-secondary-sm {
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.85rem;
-  background: var(--color-sun);
-  color: var(--color-ink);
-  border: var(--border);
-  border-radius: 999px;
-  padding: 0.45rem 1rem;
-  cursor: pointer;
-  box-shadow: 2px 2px 0 var(--color-ink);
-}
-
-/* Profile Forms */
-.dash-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.35rem;
-  max-width: 560px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.form-group label {
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="tel"],
-.form-group input[type="url"] {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  padding: 0.75rem 1rem;
-  border: var(--border);
-  border-radius: var(--radius-sm);
-  background: #fff;
-  color: var(--color-ink);
-}
-
-.form-group input:focus {
-  outline: none;
-  box-shadow: 3px 3px 0 var(--color-ink);
-}
-
-.form-group--checkbox {
-  flex-direction: row;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.form-group--checkbox input {
-  width: 1.15rem;
-  height: 1.15rem;
-  accent-color: var(--color-flame);
-}
-
-.form-feedback {
-  font-weight: 700;
-  padding: 0.75rem 1rem;
-  background: var(--color-sun);
-  border: var(--border);
-  border-radius: var(--radius-sm);
-  margin: 0;
-}
-
-/* Responsive Collapse */
-@media (max-width: 860px) {
-  .dash-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .dash-sidebar {
-    position: static;
-  }
-
-  .dash-sidebar__nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .sidebar-link {
-    width: auto;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
 }

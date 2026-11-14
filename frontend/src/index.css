@@ -10,4 +10,5 @@
 @import "./styles/navbar/pricing.css";
 @import "./styles/dashboard/customerdash.css";
 @import "./styles/dashboard/vendordash.css";
+@import "./styles/dashboard/dashboard.css";
 @import "./styles/footer.css"; 

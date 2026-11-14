@@ -96,5 +96,15 @@ export const api = {
         body: JSON.stringify({ email }),
     }),
 
+  updateUser: (userId: string, payload: Partial<CreateUserPayload>) =>
+    request<User>(`/api/users/${userId}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
   
+  updateVendor: (vendorId: string, payload: Partial<CreateVendorPayload>) =>
+    request<Vendor>(`/api/vendors/${vendorId}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
 };

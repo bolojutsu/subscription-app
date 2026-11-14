@@ -1,9 +1,22 @@
 import { useState, useEffect } from "react";
-import { getSession, clearSession } from "../../configs/session";
+import { getSession, saveSession, clearSession } from "../../configs/session";
 import { api } from "../../configs/api";
+import { formatCurrency } from "../../configs/format";
 import type { Subscription, Vendor } from "../../configs/types";
+import DashSidebar from "../dashsidebar";
+import StatCard from "../statcard";
+import StatusBadge from "../statusbadge";
+
 
 type CustomerTab = "overview" | "billing" | "profile";
+
+const TABS: { id: CustomerTab; label: string }[] = [
+  { id: "overview", label: "Overview & Subscriptions" },
+  { id: "billing", label: "Billing & History" },
+  { id: "profile", label: "Profile & Account" },
+];
+
+const NAV_LINKS = [{ href: "/discover", label: "Discover Vendors ↗" }];
 
 const CustomerDash = () => {
   const session = getSession();
@@ -15,15 +28,17 @@ const CustomerDash = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cancelingId, setCancelingId] = useState<string | null>(null);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
-  // Profile form state
   const [profileForm, setProfileForm] = useState({
-    name: session?.name || "",
-    email: session?.email || "",
-    emailNotifications: true,
+    name: session?.role === "customer" ? session.name : "",
+    email: "",
   });
   const [savingProfile, setSavingProfile] = useState(false);
-  const [profileMessage, setProfileMessage] = useState<string | null>(null);
+  const [profileMessage, setProfileMessage] = useState<{
+    text: string;
+    isError: boolean;
+  } | null>(null);
 
   useEffect(() => {
     if (!customerId) {
@@ -31,33 +46,47 @@ const CustomerDash = () => {
       return;
     }
 
+    // Guards against setting state after unmount / customerId change
+    let cancelled = false;
+
     const loadCustomerData = async () => {
       try {
         setLoading(true);
-        const [userSubs, vendorList] = await Promise.all([
+        setError(null);
+        const [userSubs, vendorList, customerData] = await Promise.all([
           api.getUserSubscriptions(customerId),
           api.listVendors(),
+          api.getUser(customerId),
         ]);
-
-        const vendorMap: Record<string, Vendor> = {};
-        vendorList.forEach((v) => {
-          vendorMap[v.vendor_id] = v;
-        });
+        if (cancelled) return;
 
         setSubscriptions(userSubs);
-        setVendors(vendorMap);
-      } catch (err) {
-        setError("Failed to load dashboard data. Please try again.");
+        setVendors(Object.fromEntries(vendorList.map((v) => [v.vendor_id, v])));
+        setProfileForm({ name: customerData.name, email: customerData.email });
+      } catch {
+        if (!cancelled) {
+          setError("Failed to load dashboard data. Please try again.");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     loadCustomerData();
+    return () => {
+      cancelled = true;
+    };
   }, [customerId]);
+
+  const handleTabChange = (tab: CustomerTab) => {
+    setActiveTab(tab);
+    setProfileMessage(null);
+    setCancelError(null);
+  };
 
   const handleCancelSubscription = async (subscriptionId: string) => {
     setCancelingId(subscriptionId);
+    setCancelError(null);
     try {
       await api.cancelSubscription(subscriptionId);
       setSubscriptions((prev) =>
@@ -68,7 +97,7 @@ const CustomerDash = () => {
         )
       );
     } catch {
-      alert("Failed to cancel subscription. Please try again.");
+      setCancelError("Failed to cancel subscription. Please try again.");
     } finally {
       setCancelingId(null);
     }
@@ -80,16 +109,19 @@ const CustomerDash = () => {
     setSavingProfile(true);
     setProfileMessage(null);
     try {
-      // Adjust to match your actual api.ts method signature
-      if ("updateUser" in api && typeof (api as any).updateUser === "function") {
-        await (api as any).updateUser(customerId, {
-          name: profileForm.name,
-          email: profileForm.email,
-        });
-      }
-      setProfileMessage("Profile updated successfully!");
+      const updatedUser = await api.updateUser(customerId, {
+        name: profileForm.name,
+        email: profileForm.email,
+      });
+
+      // Keep the session in sync so the sidebar greeting updates immediately
+      saveSession({ role: "customer", id: customerId, name: updatedUser.name });
+      setProfileMessage({ text: "Profile updated successfully!", isError: false });
     } catch {
-      setProfileMessage("Failed to update profile. Please try again.");
+      setProfileMessage({
+        text: "Failed to update profile. Please try again.",
+        isError: true,
+      });
     } finally {
       setSavingProfile(false);
     }
@@ -115,52 +147,25 @@ const CustomerDash = () => {
     (acc, sub) => acc + sub.price_in_cents,
     0
   );
+  // Active first, then canceled; sort is stable so original order is kept within each group
+  const billingRows = [...subscriptions].sort(
+    (a, b) => Number(b.is_active) - Number(a.is_active)
+  );
 
   return (
-    <section className="customer-dash">
+    <section className="dash-page customer-dash">
       <div className="dash-layout">
-        {/* Sidebar Navigation */}
-        <aside className="dash-sidebar" aria-label="Customer Navigation">
-          <div className="dash-sidebar__brand">
-            <h1>Regulars</h1>
-            <p className="welcome-text">{profileForm.name || session.name}</p>
-          </div>
+        <DashSidebar
+          ariaLabel="Customer Navigation"
+          title="Regulars"
+          subtitle={`Welcome back, ${profileForm.name || session.name}!`}
+          tabs={TABS}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          links={NAV_LINKS}
+          onLogout={handleLogout}
+        />
 
-          <nav className="dash-sidebar__nav">
-            <button
-              type="button"
-              className={`sidebar-link ${activeTab === "overview" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("overview")}
-            >
-              Overview & Subscriptions
-            </button>
-            <button
-              type="button"
-              className={`sidebar-link ${activeTab === "billing" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("billing")}
-            >
-              Billing & History
-            </button>
-            <button
-              type="button"
-              className={`sidebar-link ${activeTab === "profile" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("profile")}
-            >
-              Profile & Account
-            </button>
-            <a href="/discover" className="sidebar-link sidebar-link--external">
-              Discover Vendors ↗
-            </a>
-          </nav>
-
-          <div className="dash-sidebar__footer">
-            <button onClick={handleLogout} className="btn-logout btn-full">
-              Sign Out
-            </button>
-          </div>
-        </aside>
-
-        {/* Main Content Pane */}
         <main className="main-content">
           {loading ? (
             <p className="status-message">Loading your dashboard...</p>
@@ -171,25 +176,25 @@ const CustomerDash = () => {
               {activeTab === "overview" && (
                 <>
                   <header className="section-header">
-                    <h2>Dashboard Overview</h2>
+                    <h1>Dashboard Overview</h1>
                     <p>Manage your active memberships and monthly spend.</p>
                   </header>
 
                   <div className="stats-grid">
-                    <div className="stat-card">
-                      <h3>Active Subscriptions</h3>
-                      <p className="stat-value">{activeSubs.length}</p>
-                    </div>
-                    <div className="stat-card">
-                      <h3>Total Monthly Spend</h3>
-                      <p className="stat-value">
-                        ${(totalMonthlySpend / 100).toFixed(2)}
-                      </p>
-                    </div>
+                    <StatCard label="Active Subscriptions" value={activeSubs.length} />
+                    <StatCard
+                      label="Total Monthly Spend"
+                      value={formatCurrency(totalMonthlySpend)}
+                    />
                   </div>
 
                   <section className="subscriptions-section">
                     <h3>Your Subscriptions</h3>
+                    {cancelError && (
+                      <p className="form-feedback form-feedback--error" role="alert">
+                        {cancelError}
+                      </p>
+                    )}
                     {subscriptions.length === 0 ? (
                       <div className="empty-state">
                         <p>You haven't subscribed to any vendors yet.</p>
@@ -199,44 +204,37 @@ const CustomerDash = () => {
                       </div>
                     ) : (
                       <ul className="subscriptions-list">
-                        {subscriptions.map((sub) => {
-                          const vendor = vendors[sub.vendor_id];
-                          return (
-                            <li key={sub.subscription_id} className="sub-card">
-                              <div className="sub-card__details">
-                                <h3>
-                                  {vendor ? vendor.business_name : "Unknown Vendor"}
-                                </h3>
-                                <p className="sub-card__plan">
-                                  {sub.plan_name} Plan · $
-                                  {(sub.price_in_cents / 100).toFixed(2)}/mo
-                                </p>
-                                <span
-                                  className={`badge ${
-                                    sub.is_active ? "badge--active" : "badge--canceled"
-                                  }`}
+                        {subscriptions.map((sub) => (
+                          <li key={sub.subscription_id} className="sub-card">
+                            <div className="sub-card__details">
+                              <h3>
+                                {vendors[sub.vendor_id]?.business_name ??
+                                  "Unknown Vendor"}
+                              </h3>
+                              <p className="sub-card__plan">
+                                {sub.plan_name} Plan ·{" "}
+                                {formatCurrency(sub.price_in_cents)}/mo
+                              </p>
+                              <StatusBadge active={sub.is_active} />
+                            </div>
+                            <div className="sub-card__actions">
+                              {sub.is_active && (
+                                <button
+                                  type="button"
+                                  className="btn-danger"
+                                  onClick={() =>
+                                    handleCancelSubscription(sub.subscription_id)
+                                  }
+                                  disabled={cancelingId === sub.subscription_id}
                                 >
-                                  {sub.is_active ? "Active" : "Canceled"}
-                                </span>
-                              </div>
-                              <div className="sub-card__actions">
-                                {sub.is_active && (
-                                  <button
-                                    className="btn-danger"
-                                    onClick={() =>
-                                      handleCancelSubscription(sub.subscription_id)
-                                    }
-                                    disabled={cancelingId === sub.subscription_id}
-                                  >
-                                    {cancelingId === sub.subscription_id
-                                      ? "Canceling..."
-                                      : "Cancel Subscription"}
-                                  </button>
-                                )}
-                              </div>
-                            </li>
-                          );
-                        })}
+                                  {cancelingId === sub.subscription_id
+                                    ? "Canceling..."
+                                    : "Cancel Subscription"}
+                                </button>
+                              )}
+                            </div>
+                          </li>
+                        ))}
                       </ul>
                     )}
                   </section>
@@ -246,21 +244,32 @@ const CustomerDash = () => {
               {activeTab === "billing" && (
                 <section className="panel-card">
                   <header className="section-header">
-                    <h2>Billing & Payment History</h2>
+                    <h1>Billing & Payment History</h1>
                     <p>Review recurring charges across your subscribed vendors.</p>
                   </header>
-                  {subscriptions.length === 0 ? (
+                  {billingRows.length === 0 ? (
                     <p>No billing records found.</p>
                   ) : (
                     <ul className="subscriptions-list">
-                      {subscriptions.map((sub) => (
-                        <li key={sub.subscription_id} className="sub-card">
+                      {billingRows.map((sub) => (
+                        <li
+                          key={sub.subscription_id}
+                          className={`sub-card sub-card--compact ${
+                            sub.is_active ? "" : "sub-card--inactive"
+                          }`}
+                        >
                           <div>
-                            <h3>{vendors[sub.vendor_id]?.business_name || "Vendor"}</h3>
-                            <p className="sub-card__plan">{sub.plan_name} — Recurring Monthly</p>
+                            <h3>
+                              {vendors[sub.vendor_id]?.business_name ?? "Vendor"}
+                            </h3>
+                            <p className="sub-card__plan">
+                              {sub.plan_name} —{" "}
+                              {sub.is_active ? "Recurring monthly" : "No longer billed"}
+                            </p>
                           </div>
-                          <div>
-                            <strong>${(sub.price_in_cents / 100).toFixed(2)}</strong>
+                          <div className="sub-card__amount">
+                            <strong>{formatCurrency(sub.price_in_cents)}</strong>
+                            <StatusBadge active={sub.is_active} />
                           </div>
                         </li>
                       ))}
@@ -272,8 +281,8 @@ const CustomerDash = () => {
               {activeTab === "profile" && (
                 <section className="panel-card">
                   <header className="section-header">
-                    <h2>Profile & Account Settings</h2>
-                    <p>Update your personal details and preferences.</p>
+                    <h1>Profile & Account Settings</h1>
+                    <p>Update your personal details.</p>
                   </header>
 
                   <form onSubmit={handleSaveProfile} className="dash-form">
@@ -303,32 +312,18 @@ const CustomerDash = () => {
                       />
                     </div>
 
-                    <div className="form-group form-group--checkbox">
-                      <input
-                        id="cust-notif"
-                        type="checkbox"
-                        checked={profileForm.emailNotifications}
-                        onChange={(e) =>
-                          setProfileForm({
-                            ...profileForm,
-                            emailNotifications: e.target.checked,
-                          })
-                        }
-                      />
-                      <label htmlFor="cust-notif">
-                        Receive renewal reminders and vendor updates via email
-                      </label>
-                    </div>
-
                     {profileMessage && (
-                      <p className="form-feedback">{profileMessage}</p>
+                      <p
+                        className={`form-feedback ${
+                          profileMessage.isError ? "form-feedback--error" : ""
+                        }`}
+                        role="status"
+                      >
+                        {profileMessage.text}
+                      </p>
                     )}
 
-                    <button
-                      type="submit"
-                      className="btn-primary"
-                      disabled={savingProfile}
-                    >
+                    <button type="submit" className="btn-primary" disabled={savingProfile}>
                       {savingProfile ? "Saving..." : "Save Changes"}
                     </button>
                   </form>

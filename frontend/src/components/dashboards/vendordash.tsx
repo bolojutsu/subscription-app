@@ -1,9 +1,34 @@
 import { useState, useEffect } from "react";
-import { getSession, clearSession } from "../../configs/session";
+import { getSession, saveSession, clearSession } from "../../configs/session";
 import { api } from "../../configs/api";
+import { formatCurrency } from "../../configs/format";
 import type { Subscription, Vendor, User } from "../../configs/types";
+import DashSidebar from "../dashsidebar";
+import StatCard from "../statcard";
+import StatusBadge from "../statusbadge";
+
 
 type VendorTab = "overview" | "subscribers" | "profile";
+
+const toBusinessForm = (v: Vendor) => ({
+  business_name: v.business_name || "",
+  email: v.email || "",
+  phone: v.phone || "",
+  address: v.address || "",
+  website: v.website || "",
+  description: v.description || "",
+});
+
+type BusinessForm = ReturnType<typeof toBusinessForm>;
+
+const EMPTY_FORM: BusinessForm = {
+  business_name: "",
+  email: "",
+  phone: "",
+  address: "",
+  website: "",
+  description: "",
+};
 
 const VendorDash = () => {
   const session = getSession();
@@ -16,16 +41,12 @@ const VendorDash = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Editable business profile form
-  const [businessForm, setBusinessForm] = useState({
-    business_name: "",
-    email: "",
-    phone: "",
-    website: "",
-    address: "",
-  });
+  const [businessForm, setBusinessForm] = useState<BusinessForm>(EMPTY_FORM);
   const [savingBusiness, setSavingBusiness] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [saveMessage, setSaveMessage] = useState<{
+    text: string;
+    isError: boolean;
+  } | null>(null);
 
   useEffect(() => {
     if (!vendorId) {
@@ -33,45 +54,55 @@ const VendorDash = () => {
       return;
     }
 
+    // Guards against setting state after unmount / vendorId change
+    let cancelled = false;
+
     const loadVendorData = async () => {
       try {
         setLoading(true);
+        setError(null);
         const [vendorData, vendorSubs] = await Promise.all([
           api.getVendor(vendorId),
           api.getVendorSubscriptions(vendorId),
         ]);
+        if (cancelled) return;
 
         setVendor(vendorData);
-        setBusinessForm({
-          business_name: vendorData.business_name || "",
-          email: vendorData.email || "",
-          phone: vendorData.phone || "",
-          website: vendorData.website || "",
-          address: vendorData.address || "",
-        });
+        setBusinessForm(toBusinessForm(vendorData));
         setSubscriptions(vendorSubs);
 
+        // TODO: replace with one GET /api/vendors/:id/subscribers call (joined name + email)
         const userIds = Array.from(new Set(vendorSubs.map((s) => s.user_id)));
-        const userProfiles = await Promise.all(
+        const profiles = await Promise.all(
           userIds.map((id) => api.getUser(id).catch(() => null))
         );
+        if (cancelled) return;
 
-        const userMap: Record<string, User> = {};
-        userProfiles.forEach((user) => {
-          if (user) {
-            userMap[user.user_id] = user;
-          }
-        });
-        setSubscribers(userMap);
-      } catch (err) {
-        setError("Failed to load vendor dashboard details.");
+        setSubscribers(
+          Object.fromEntries(
+            profiles.filter((u): u is User => u !== null).map((u) => [u.user_id, u])
+          )
+        );
+      } catch {
+        if (!cancelled) setError("Failed to load vendor dashboard details.");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     loadVendorData();
+    return () => {
+      cancelled = true;
+    };
   }, [vendorId]);
+
+  const updateField = (field: keyof BusinessForm, value: string) =>
+    setBusinessForm((prev) => ({ ...prev, [field]: value }));
+
+  const handleTabChange = (tab: VendorTab) => {
+    setActiveTab(tab);
+    setSaveMessage(null);
+  };
 
   const handleSaveBusiness = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,16 +110,14 @@ const VendorDash = () => {
     setSavingBusiness(true);
     setSaveMessage(null);
     try {
-      // Adjust to match your actual api.ts method signature
-      if ("updateVendor" in api && typeof (api as any).updateVendor === "function") {
-        const updated = await (api as any).updateVendor(vendorId, businessForm);
-        setVendor((prev) => (prev ? { ...prev, ...updated } : updated));
-      } else {
-        setVendor((prev) => (prev ? { ...prev, ...businessForm } : null));
-      }
-      setSaveMessage("Business profile updated!");
+      const updated = await api.updateVendor(vendorId, businessForm);
+      setVendor(updated);
+
+      // Keep the session in sync so the sidebar name updates immediately
+      saveSession({ role: "vendor", id: vendorId, name: updated.business_name });
+      setSaveMessage({ text: "Business profile updated successfully!", isError: false });
     } catch {
-      setSaveMessage("Failed to save business details.");
+      setSaveMessage({ text: "Failed to save business details.", isError: true });
     } finally {
       setSavingBusiness(false);
     }
@@ -115,48 +144,25 @@ const VendorDash = () => {
     0
   );
 
+  const tabs: { id: VendorTab; label: string }[] = [
+    { id: "overview", label: "Overview & Metrics" },
+    { id: "subscribers", label: `Subscribers (${activeSubscriptions.length})` },
+    { id: "profile", label: "Business Profile" },
+  ];
+
   return (
-    <section className="vendor-dash">
+    <section className="dash-page vendor-dash">
       <div className="dash-layout">
-        {/* Sidebar Navigation */}
-        <aside className="dash-sidebar" aria-label="Vendor Navigation">
-          <div className="dash-sidebar__brand">
-            <span className="portal-tag">Vendor Portal</span>
-            <h2>{vendor?.business_name || session.name}</h2>
-          </div>
+        <DashSidebar
+          ariaLabel="Vendor Navigation"
+          eyebrow="Vendor Portal"
+          title={vendor?.business_name || session.name}
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          onLogout={handleLogout}
+        />
 
-          <nav className="dash-sidebar__nav">
-            <button
-              type="button"
-              className={`sidebar-link ${activeTab === "overview" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("overview")}
-            >
-              Overview & Metrics
-            </button>
-            <button
-              type="button"
-              className={`sidebar-link ${activeTab === "subscribers" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("subscribers")}
-            >
-              Subscribers ({subscriptions.length})
-            </button>
-            <button
-              type="button"
-              className={`sidebar-link ${activeTab === "profile" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("profile")}
-            >
-              Business Profile
-            </button>
-          </nav>
-
-          <div className="dash-sidebar__footer">
-            <button onClick={handleLogout} className="btn-logout btn-full">
-              Sign Out
-            </button>
-          </div>
-        </aside>
-
-        {/* Main Content Pane */}
         <main className="main-content">
           {loading ? (
             <p className="status-message">Loading business analytics...</p>
@@ -167,25 +173,20 @@ const VendorDash = () => {
               {activeTab === "overview" && (
                 <>
                   <header className="section-header">
-                    <h2>Business Overview</h2>
+                    <h1>Business Overview</h1>
                     <p>Track recurring revenue and subscriber growth.</p>
                   </header>
 
                   <div className="stats-grid">
-                    <div className="stat-card">
-                      <h3>Active Subscribers</h3>
-                      <p className="stat-value">{activeSubscriptions.length}</p>
-                    </div>
-                    <div className="stat-card">
-                      <h3>Monthly Revenue (MRR)</h3>
-                      <p className="stat-value">
-                        ${(monthlyRecurringRevenue / 100).toFixed(2)}
-                      </p>
-                    </div>
-                    <div className="stat-card">
-                      <h3>Total Lifetime Subscriptions</h3>
-                      <p className="stat-value">{subscriptions.length}</p>
-                    </div>
+                    <StatCard label="Active Subscribers" value={activeSubscriptions.length} />
+                    <StatCard
+                      label="Monthly Revenue (MRR)"
+                      value={formatCurrency(monthlyRecurringRevenue)}
+                    />
+                    <StatCard
+                      label="Total Lifetime Subscriptions"
+                      value={subscriptions.length}
+                    />
                   </div>
 
                   {vendor && (
@@ -195,7 +196,7 @@ const VendorDash = () => {
                         <button
                           type="button"
                           className="btn-secondary-sm"
-                          onClick={() => setActiveTab("profile")}
+                          onClick={() => handleTabChange("profile")}
                         >
                           Edit Profile
                         </button>
@@ -222,6 +223,11 @@ const VendorDash = () => {
                             <strong>Address:</strong> {vendor.address}
                           </p>
                         )}
+                        {vendor.description && (
+                          <p className="vendor-details-grid__wide">
+                            <strong>Description:</strong> {vendor.description}
+                          </p>
+                        )}
                       </div>
                     </section>
                   )}
@@ -231,8 +237,8 @@ const VendorDash = () => {
               {activeTab === "subscribers" && (
                 <section className="subscribers-section">
                   <header className="section-header">
-                    <h2>Customer Subscriptions</h2>
-                    <p>All active and past members subscribed to your plans.</p>
+                    <h1>Customer Subscriptions</h1>
+                    <p>All members subscribed to your plans, including canceled ones.</p>
                   </header>
 
                   {subscriptions.length === 0 ? (
@@ -242,11 +248,11 @@ const VendorDash = () => {
                       <table className="subscribers-table">
                         <thead>
                           <tr>
-                            <th>Customer Name</th>
-                            <th>Email</th>
-                            <th>Plan</th>
-                            <th>Price</th>
-                            <th>Status</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Plan</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Status</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -254,20 +260,12 @@ const VendorDash = () => {
                             const subscriber = subscribers[sub.user_id];
                             return (
                               <tr key={sub.subscription_id}>
-                                <td>{subscriber ? subscriber.name : "Unknown"}</td>
-                                <td>{subscriber ? subscriber.email : "N/A"}</td>
+                                <td>{subscriber?.name ?? "Unknown"}</td>
+                                <td>{subscriber?.email ?? "N/A"}</td>
                                 <td>{sub.plan_name}</td>
-                                <td>${(sub.price_in_cents / 100).toFixed(2)}/mo</td>
+                                <td>{formatCurrency(sub.price_in_cents)}/mo</td>
                                 <td>
-                                  <span
-                                    className={`badge ${
-                                      sub.is_active
-                                        ? "badge--active"
-                                        : "badge--canceled"
-                                    }`}
-                                  >
-                                    {sub.is_active ? "Active" : "Canceled"}
-                                  </span>
+                                  <StatusBadge active={sub.is_active} />
                                 </td>
                               </tr>
                             );
@@ -280,10 +278,10 @@ const VendorDash = () => {
               )}
 
               {activeTab === "profile" && (
-                <section className="vendor-details-card">
+                <section className="panel-card">
                   <header className="section-header">
-                    <h2>Edit Business Profile</h2>
-                    <p>Update the contact and location details customers see.</p>
+                    <h1>Edit Business Profile</h1>
+                    <p>Update storefront contact and location details.</p>
                   </header>
 
                   <form onSubmit={handleSaveBusiness} className="dash-form">
@@ -293,12 +291,7 @@ const VendorDash = () => {
                         id="biz-name"
                         type="text"
                         value={businessForm.business_name}
-                        onChange={(e) =>
-                          setBusinessForm({
-                            ...businessForm,
-                            business_name: e.target.value,
-                          })
-                        }
+                        onChange={(e) => updateField("business_name", e.target.value)}
                         required
                       />
                     </div>
@@ -310,9 +303,7 @@ const VendorDash = () => {
                           id="biz-email"
                           type="email"
                           value={businessForm.email}
-                          onChange={(e) =>
-                            setBusinessForm({ ...businessForm, email: e.target.value })
-                          }
+                          onChange={(e) => updateField("email", e.target.value)}
                           required
                         />
                       </div>
@@ -323,9 +314,7 @@ const VendorDash = () => {
                           id="biz-phone"
                           type="tel"
                           value={businessForm.phone}
-                          onChange={(e) =>
-                            setBusinessForm({ ...businessForm, phone: e.target.value })
-                          }
+                          onChange={(e) => updateField("phone", e.target.value)}
                         />
                       </div>
                     </div>
@@ -337,9 +326,7 @@ const VendorDash = () => {
                         type="url"
                         placeholder="https://..."
                         value={businessForm.website}
-                        onChange={(e) =>
-                          setBusinessForm({ ...businessForm, website: e.target.value })
-                        }
+                        onChange={(e) => updateField("website", e.target.value)}
                       />
                     </div>
 
@@ -349,19 +336,32 @@ const VendorDash = () => {
                         id="biz-address"
                         type="text"
                         value={businessForm.address}
-                        onChange={(e) =>
-                          setBusinessForm({ ...businessForm, address: e.target.value })
-                        }
+                        onChange={(e) => updateField("address", e.target.value)}
                       />
                     </div>
 
-                    {saveMessage && <p className="form-feedback">{saveMessage}</p>}
+                    <div className="form-group">
+                      <label htmlFor="biz-desc">Business Description</label>
+                      <textarea
+                        id="biz-desc"
+                        rows={3}
+                        value={businessForm.description}
+                        onChange={(e) => updateField("description", e.target.value)}
+                      />
+                    </div>
 
-                    <button
-                      type="submit"
-                      className="btn-primary"
-                      disabled={savingBusiness}
-                    >
+                    {saveMessage && (
+                      <p
+                        className={`form-feedback ${
+                          saveMessage.isError ? "form-feedback--error" : ""
+                        }`}
+                        role="status"
+                      >
+                        {saveMessage.text}
+                      </p>
+                    )}
+
+                    <button type="submit" className="btn-primary" disabled={savingBusiness}>
                       {savingBusiness ? "Saving..." : "Save Business Profile"}
                     </button>
                   </form>
